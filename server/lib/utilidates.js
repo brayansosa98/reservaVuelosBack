@@ -1,6 +1,6 @@
 'use strict';
 
-Utils.isLoggedUser = function () {
+Utilidades.usuarioLogeado = function () {
   let user = Meteor.user();
   if (!user) {
     throw new Meteor.Error("user not logged");
@@ -8,7 +8,7 @@ Utils.isLoggedUser = function () {
   return user;
 }
 
-Utils.getRamdonPassword = function () {
+Utilidades.contraseñaAleatoria = function () {
   var chars = "abcdefghiklmnopqrstuvwxyz";
   var string_length = 6;
   var randomstring = '';
