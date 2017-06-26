@@ -16,4 +16,9 @@ function createEntidadesTcredito() {
   }
 }
 
+function obtenerEntidades() {
+  return Modelos.entidades_Tcredito.find().fetch();
+}
+
 Metodos.createEntidadesTcredito = createEntidadesTcredito;
+Metodos.obtenerEntidades = obtenerEntidades;

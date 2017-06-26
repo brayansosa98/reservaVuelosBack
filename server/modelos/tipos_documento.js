@@ -20,4 +20,9 @@ function creacionTiposDocumento() {
   }
 }
 
+function obtenerTipos() {
+  return Modelos.tiposDocumento.find().fetch();
+}
+
 Metodos.creacionTiposDocumento = creacionTiposDocumento;
+Metodos.obtenerTipos = obtenerTipos;

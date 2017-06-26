@@ -7,7 +7,7 @@ function crearPerfiles(informacion) {
     let perfiles = [
       { perfil: "Administrador", eliminado: false },
       { perfil: "Cliente", eliminado: false },
-      { perfil: "Aerolinea", eliminado: false }
+      // { perfil: "Aerolinea", eliminado: false }
     ]
     perfiles.forEach((perfil) => {
       Modelos.perfiles.insert(perfil);
@@ -16,4 +16,4 @@ function crearPerfiles(informacion) {
   }
 }
 
-Metodos.crearPerfiles = crearPerfiles
+Metodos.crearPerfiles = crearPerfiles;

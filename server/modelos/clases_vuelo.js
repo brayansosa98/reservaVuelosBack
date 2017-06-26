@@ -10,12 +10,16 @@ function createClasesVuelo() {
       { name: "Turística", eliminado: false },
       { name: "Económica", eliminado: false }
     ];
-
     clases_vuelo.forEach((clase) => {
       Modelos.clases_vuelo.insert(clase);
     }, this);
-
     console.log("Clases de vuelo creadas");
   }
-
 }
+
+function obtenerTodasLasClases() {
+  return Modelos.clases_vuelo.find().fetch();
+}
+
+Metodos.createClasesVuelo = createClasesVuelo;
+Metodos.obtenerTodasLasClases = obtenerTodasLasClases;

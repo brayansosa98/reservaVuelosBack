@@ -1,12 +1,12 @@
 'use strict';
 
-Modelos.users = Meteor.users;
+Modelos.usuarios = Meteor.users;
 
 function crearUsuario(informacion) {
   let usuarioLogeado = Utilidades.usuarioLogeado();
   let userId;
 
-  var contraseñaTemporal = informacion.password ? informacion.profile.password : Utilidades.contraseñaAleatoria();
+  var contraseñaTemporal = informacion.password ? informacion.password : Utilidades.contraseñaAleatoria();
 
   let usuario = {
     username: informacion.username,

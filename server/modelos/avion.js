@@ -14,4 +14,9 @@ function crearAvion(informacion) {
   return Modelos.aviones.insert(avion);
 }
 
+function obtenerAbionesPorAerolinea(informacion) {
+  return Modelos.aviones.find({ id_aerolinea: informacion.id_aerolinea }).fetch();
+}
+
 Metodos.crearAvion = crearAvion;
+Metodos.obtenerAerolineas = obtenerAbionesPorAerolinea;
