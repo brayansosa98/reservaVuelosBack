@@ -24,8 +24,7 @@ function crearUsuario(informacion) {
       eliminado: false
     }
   }
-  // { username: "brayansosa98", email: "brayan_sosa23151@elpoli.edu.co", name: "Brayan", lastName: "Sosa", birthdayDate: new Date() }
-
+  
   userId = Accounts.createUser(usuario);
 
   return {

@@ -1302,8 +1302,8 @@ function crearPaisesDepartamentosCiudades() {
   }
 }
 
-function obtenerDepartamentos() {
-  return Modelos.departamentos.find().fetch();
+function obtenerCiudades() {
+  return Modelos.ciudades.find().fetch();
 }
 
 function obtenerCuidades(informacion) {
@@ -1311,4 +1311,4 @@ function obtenerCuidades(informacion) {
 }
 
 Metodos.crearPaisesDepartamentosCiudades = crearPaisesDepartamentosCiudades;
-Metodos.obtenerDepartamentos = obtenerDepartamentos;
+Metodos.obtenerCiudades = obtenerCiudades;

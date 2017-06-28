@@ -19,5 +19,9 @@ function obtenerAerolineas(informacion) {
   return Modelos.aerolineas.find().fetch();
 }
 
+function guardarAerolineas() {
+  
+}
+
 Metodos.creaerAerolinea = creaerAerolinea;
 Metodos.obtenerAerolineas = obtenerAerolineas;
