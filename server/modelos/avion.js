@@ -3,11 +3,9 @@
 Modelos.aviones = new Mongo.Collection("aviones");
 
 function crearAvion(informacion) {
-  let aerolinea = Modelos.findOne({ nombre_comercial: informacion.nombreAerolinea });
   let avion = {
-    id_aerolinea: aerolinea._id,
+    id_aerolinea: informacion.id_aerolinea,
     placa: informacion.placa,
-    modelo: informacion.modelo,
     eliminado: false
   };
 

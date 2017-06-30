@@ -5,34 +5,33 @@ Modelos.vuelos_detalle = new Mongo.Collection("vuelos_detalle");
 Modelos.reservas = new Mongo.Collection("reservas");
 
 function crearVuelo(informacion) {
-  let ciudadOrigen = Modelos.cuidades.findOne({ nombre: informacion.ciudadOrigen });
-  let ciudadDestino = Modelos.cuidades.findOne({ nombre: informacion.ciudadDestino });
-  let aerolinea = Modelos.aerolinea.findOne({ nombre_comercial: informacion.aerolinea });
-  let avion = Modelos.aerolinea.findOne({ nombre_comercial: informacion.placa_avion });
-
+  let ciudadOrigen = Modelos.ciudades.findOne({ nombre: informacion.ciudadOrigen });
+  let ciudadDestino = Modelos.ciudades.findOne({ nombre: informacion.ciudadDestino });
   let vuelo = {
     id_ciudadOri: ciudadOrigen._id,
     id_ciudadDes: ciudadDestino._id,
-    id_aerolinea: aerolinea._id,
+    id_aerolinea: informacion.aerolinea,
+    id_avion: informacion.avion,
     fecha_salida: informacion.fecha_salida,
+    hora_salida: informacion.hora_salida,
     fecha_llegada: informacion.fecha_llegada,
+    hora_llegada: informacion.hora_llegada,
     estado: 0
   }
 
-  Modelos.vuelos.insert(vuelo, (err, id) => {
-    let informacionVuelos_detalles = {
-      idVuelo: id,
-      primeraClaseAsientos: informacion.primeraClaseAsientos,
-      primeraClaseCosto: informacion.primeraClaseCosto,
-      turisticaAsientos: informacion.turisticaAsientos,
-      turisticaCosto: informacion.turisticaCosto,
-      economicaAsientos: informacion.EconomicaAsientos,
-      economicaCosto: informacion.EconomicaCosto,
-    }
-    crearVuelos_detalles(informacionVuelos_detalles);
-    console.log("Vuelo cretado");
-    return id;
-  });
+  let idVuelo = Modelos.vuelos.insert(vuelo);
+  let informacionVuelos_detalles = {
+    idVuelo: idVuelo,
+    primeraClaseAsientos: informacion.primeraClaseAsientos,
+    primeraClaseCosto: informacion.primeraClaseCosto,
+    turisticaAsientos: informacion.turisticaAsientos,
+    turisticaCosto: informacion.turisticaCosto,
+    economicaAsientos: informacion.EconomicaAsientos,
+    economicaCosto: informacion.EconomicaCosto,
+  }
+  crearVuelos_detalles(informacionVuelos_detalles);
+  console.log("Vuelo cretado");
+  return idVuelo;
 
 }
 
@@ -69,15 +68,27 @@ function crearReserva(informacion) {
   let reserva = {
     id_vuelo_detalle: informacion.id_vuelo_detalle,
     id_usuario: informacion.id_usuario,
-    fecha_reserva: new Date(),
+    id_vuelo: informacion.id_vuelo,
     estado: 0
   };
-  Modelos.reservas.insert(reserva, (err, id) => {
-    return {
-      idReserva: id,
-      idUsuario: informacion.id_usuario
-    }
-  });
+
+  var dateObj = new Date();
+  var month = dateObj.getUTCMonth() + 1; //months from 1-12
+  var day = dateObj.getUTCDate();
+  var year = dateObj.getUTCFullYear();
+  if (day < 10) {
+    day = '0' + day
+  }
+  if (month < 10) {
+    month = '0' + month
+  }
+  reserva.fecha_reserva = day + "/" + month + "/" + year;
+
+  let idReserva = Modelos.reservas.insert(reserva);
+  return {
+    idReserva: idReserva,
+    idUsuario: informacion.id_usuario
+  }
 }
 
 function tiquetes(informacion) {
@@ -96,3 +107,122 @@ function tiquetes(informacion) {
     }
   })
 }
+
+function obtenerVuelos() {
+  let vuelos = Modelos.vuelos.find().fetch();
+
+  vuelos.forEach((vuelo) => {
+    vuelo.ciudadOrigen = Modelos.ciudades.findOne(vuelo.id_ciudadOri);
+    vuelo.ciudadDestino = Modelos.ciudades.findOne(vuelo.id_ciudadDes);
+    vuelo.aerolinea = Modelos.aerolineas.findOne(vuelo.id_aerolinea);
+    vuelo.avion = Modelos.aviones.findOne(vuelo.id_avion);
+  });
+
+  return vuelos;
+}
+
+function obtenerVueloDetalles(data) {
+  let vuelo = Modelos.vuelos.findOne(data.id_vuelo);
+  if (vuelo) {
+    vuelo.ciudadOrigen = Modelos.ciudades.findOne(vuelo.id_ciudadOri);
+    vuelo.ciudadDestino = Modelos.ciudades.findOne(vuelo.id_ciudadDes);
+    vuelo.aerolinea = Modelos.aerolineas.findOne(vuelo.id_aerolinea);
+    vuelo.avion = Modelos.aviones.findOne(vuelo.id_avion);
+  }
+  let find = {
+    id_vuelo: data.id_vuelo
+  }
+  let clases = Modelos.vuelos_detalle.find(find).fetch();
+  clases.forEach((clase) => {
+    clase.name = Modelos.clases_vuelo.findOne(clase.id_clase).name;
+  });
+  let resul = {
+    vuelo: vuelo,
+    vuelos_detalle: clases
+  }
+  return resul;
+}
+
+function buscarVuelosFiltro(data) {
+  let find = {
+    id_ciudadOri: data.origen,
+    id_ciudadDes: data.destino
+  }
+
+  if (data.fecha) {
+    find.fecha_salida = data.fecha
+  }
+
+  let vuelos = Modelos.vuelos.find(find).fetch();
+
+  vuelos.forEach((vuelo) => {
+    vuelo.ciudadOrigen = Modelos.ciudades.findOne(vuelo.id_ciudadOri);
+    vuelo.ciudadDestino = Modelos.ciudades.findOne(vuelo.id_ciudadDes);
+    vuelo.aerolinea = Modelos.aerolineas.findOne(vuelo.id_aerolinea);
+    vuelo.avion = Modelos.aviones.findOne(vuelo.id_avion);
+  });
+
+  return vuelos;
+}
+
+function obtenerReservas(data) {
+  let find = {
+    "id_usuario": data.idUsuario
+  }
+  let vuelos = Modelos.vuelos.find().fetch();
+  let vuelos_u = [];
+  vuelos.forEach((vuelo) => {
+    vuelo.ciudadOrigen = Modelos.ciudades.findOne(vuelo.id_ciudadOri);
+    vuelo.ciudadDestino = Modelos.ciudades.findOne(vuelo.id_ciudadDes);
+    vuelo.aerolinea = Modelos.aerolineas.findOne(vuelo.id_aerolinea);
+    vuelo.avion = Modelos.aviones.findOne(vuelo.id_avion);
+    let auxVuelo = {
+      vuelo: vuelo,
+      reservas: []
+    };
+    let vuelosDetalles = Modelos.vuelos_detalle.find({ id_vuelo: vuelo._id }).fetch();
+    vuelosDetalles.forEach((vueloDetalle) => {
+      find["id_vuelo_detalle"] = vueloDetalle._id;
+      find["id_vuelo"] = vuelo._id;
+      let reservas = Modelos.reservas.find(find).fetch();
+      if (reservas.length > 0) {
+        let nameClase = Modelos.clases_vuelo.findOne(vueloDetalle.id_clase).name;
+        let auxReserva = {
+          clase: nameClase,
+          reservas: reservas
+        }
+        auxVuelo.reservas.push(auxReserva);
+      }
+    });
+    if (auxVuelo.reservas.length > 0) {
+      vuelos_u.push(auxVuelo);
+    }
+  });
+
+  return vuelos_u;
+}
+
+function cancelarReserva(idReserva) {
+  let find = {
+    _id: idReserva
+  }
+
+  let updated = {
+    $set: {
+      "estado": 2
+    }
+  }
+
+  Modelos.reservas.update(find, updated);
+}
+
+Metodos.crearVuelo = crearVuelo;
+Metodos.obtenerVuelos = obtenerVuelos;
+Metodos.obtenerVueloDetalles = obtenerVueloDetalles;
+Metodos.buscarVuelosFiltro = buscarVuelosFiltro;
+Metodos.crearReserva = crearReserva;
+Metodos.obtenerReservas = obtenerReservas;
+Metodos.cancelarReserva = cancelarReserva;
+
+
+

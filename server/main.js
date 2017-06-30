@@ -16,8 +16,10 @@ Meteor.startup(() => {
     Metodos.crearUsuario(admin);
   }
   Metodos.crearPerfiles();
+  Metodos.createClasesVuelo();
   Metodos.crearPaisesDepartamentosCiudades();
   Metodos.creacionTiposDocumento();
   Metodos.createEntidadesTcredito();
+  Metodos.guardarAerolineas();
   Accounts.removeDefaultRateLimit();
 });
